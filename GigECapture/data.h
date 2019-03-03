@@ -16,4 +16,5 @@ struct Settings{
     int imageHeight;
 };
 
+
 #endif // DATA_H

@@ -13,6 +13,7 @@
 #include <QThreadPool>
 #include "videostreamwindow.h"
 #include "helper.h"
+#include <FlyCapture2.h>
 
 class ControlPanel: public QWidget
 {
@@ -20,7 +21,7 @@ class ControlPanel: public QWidget
     public:
         explicit ControlPanel(QWidget *parent = nullptr);
 	signals:
-		void startCaptureMain(int serial);
+		void startCaptureMain(FlyCapture2::GigECamera* cam);
 
     public slots:
         void onSettingsChanged();
@@ -48,9 +49,9 @@ class ControlPanel: public QWidget
         QLineEdit m_imageHeightEdit;
         QPushButton m_applySettingsButton;
         QPushButton m_captureButton;
-        Settings m_settings;
         QVector<int> m_serials;
-		QVector<VideoStreamWindow*> m_windows;
+		QMap<int, Settings> m_settings;
+		QMap<int, FlyCapture2::GigECamera*> m_cameras;
 
         void startCapture();
         void applySettings();

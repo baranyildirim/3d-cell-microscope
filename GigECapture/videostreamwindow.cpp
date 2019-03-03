@@ -178,15 +178,15 @@ void StreamWorker::run()
 
     AVIRecorder aviRecorder;
     AVIOption aviOption;
+	cout << "Trying to open AVI file: " << m_currVideoSettings.filename << endl;
     error = aviRecorder.AVIOpen(m_currVideoSettings.filename, &aviOption);
-	cout << "Trying to open AVI file" << endl;
     if(error != PGRERROR_OK)
     {
 		PrintError(error);
         return;
     }
 	cout << "Opened AVI file" << endl;
-	//emit(recordingStarted(QString(m_currVideoSettings.filename) + QString(".avi")));
+	emit(recordingStarted(QString(m_currVideoSettings.filename) + QString(".avi")));
 	m_currRecordingState = STARTED;
 
     while(GetRecorderState() == STARTED)

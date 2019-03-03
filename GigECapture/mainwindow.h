@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "controlpanel.h"
 #include "videostreamwindow.h"
+#include <FlyCapture2.h>
 
 
 class MainWindow : public QMainWindow
@@ -12,7 +13,7 @@ class MainWindow : public QMainWindow
     public:
         explicit MainWindow(QWidget *parent = nullptr);
 	public slots:
-		void handleStartCaptureMain(int serial);
+		void handleStartCaptureMain(FlyCapture2::GigECamera* cam);
     private:
         ControlPanel m_controlPanel;
         VideoStreamWindow m_videoWindow;
