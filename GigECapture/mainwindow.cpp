@@ -2,7 +2,6 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-	m_videoWindow.setParent(this);
     m_controlPanel.setParent(this);
 	
     this->setCentralWidget(&m_controlPanel);
@@ -12,5 +11,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 void MainWindow::handleStartCaptureMain(FlyCapture2::GigECamera* cam) {
 	using namespace std;
 	using namespace FlyCapture2;
-	m_videoWindow.setCamera(cam);
+	m_videoWindow = new VideoStreamWindow(this);
+	m_videoWindow->setCamera(cam);
+	m_videoWindow->show();
 }

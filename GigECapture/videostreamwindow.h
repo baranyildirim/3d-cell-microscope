@@ -14,11 +14,13 @@
 #include <QMediaPlayer>
 #include <QMediaService>
 #include <QVideoWidget>
+#include <QMediaPlaylist>
+#include <QDialog>
 #define MAX_PATH 260
 
 
 
-class VideoStreamWindow : public QWidget
+class VideoStreamWindow : public QDialog
 {
 	Q_OBJECT
 public:

@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow
 		void handleStartCaptureMain(FlyCapture2::GigECamera* cam);
     private:
         ControlPanel m_controlPanel;
-        VideoStreamWindow m_videoWindow;
+        VideoStreamWindow* m_videoWindow;
 
     public slots:
 };

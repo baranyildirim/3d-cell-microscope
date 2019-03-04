@@ -174,27 +174,29 @@ void ControlPanel::getAllCameras()
 
      cout << "Number of cameras enumerated: " << numCameras << endl;
 	
-      for(int i = 0; i < numCameras; i++){
+      for(int i = 0; i < numCamInfo; i++){
           m_serials.push_back(camInfo[i].serialNumber);
       }
 
-	  for (int i = 0; i < numCameras; i++) {
+	  for (int i = 0; i < numCamInfo; i++) {
 		  Error error;
 		  GigECamera* cam = new GigECamera();
-		  PGRGuid guid;
-		  busMgr.GetCameraFromSerialNumber((unsigned int)m_serials[i], &guid);
-		  error = cam->Connect(&guid);
-		  cout << "Connecting to: " << guid.value << endl;
+		  PGRGuid* guid = new PGRGuid();
+		  
+		  busMgr.GetCameraFromSerialNumber(m_serials[i], guid);
+		  error = cam->Connect(guid);
+		  cout << "Connecting to: " << m_serials[i] << " || " << guid->value << endl;
 		  if (error != PGRERROR_OK)
 		  {
 			  PrintError(error);
 			  return;
 		  }
-		  cout << "Connected to:" << guid.value << endl;
+		  cout << "Connected to:" << guid->value << endl;
+		  m_guids[m_serials[i]] = guid;
 		  m_cameras[m_serials[i]] = cam;
-	  }
+	}
 
-	 for (int i = 0; i < numCameras; i++) {
+	 for (int i = 0; i < numCamInfo; i++) {
 		GigECamera* cam = m_cameras[m_serials[i]];
 		GigEConfig info;
 		GigEImageSettings imageSettings;
@@ -238,7 +240,6 @@ void ControlPanel::getAllCameras()
 		settings.shutterTime = shutter.absValue;
 
 		m_settings[m_serials[i]] = settings;
-		
 	 }
 
 }

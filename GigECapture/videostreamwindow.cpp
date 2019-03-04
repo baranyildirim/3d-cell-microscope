@@ -1,6 +1,6 @@
 #include "videostreamwindow.h"
 
-VideoStreamWindow::VideoStreamWindow(QWidget *parent) : m_cam(nullptr), QWidget(parent)
+VideoStreamWindow::VideoStreamWindow(QWidget *parent) : m_cam(nullptr)
 {
     using namespace std;
     using namespace FlyCapture2;
@@ -10,8 +10,10 @@ VideoStreamWindow::VideoStreamWindow(QWidget *parent) : m_cam(nullptr), QWidget(
 }
 
 void VideoStreamWindow::handleRecordingStarted(QString dir) {
-	std::cout << "Starting to display file: " << dir.toStdString() << endl;
-	m_player.setMedia(QUrl::fromLocalFile(dir));
+	
+	QUrl videoURL = QUrl::fromLocalFile(dir + QString("-0000.avi"));
+	std::cout << (videoURL.fileName().toStdString());
+	m_player.setMedia(videoURL);
 	m_player.play();
 }
 
@@ -24,9 +26,7 @@ void VideoStreamWindow::setCamera(FlyCapture2::GigECamera * cam)
 
 void VideoStreamWindow::createStreamWindow()
 {
-    m_player.setParent(this);
-    m_videoWidget.setParent(this);
-    m_player.setVideoOutput(&m_videoWidget);
+
 }
 
 void VideoStreamWindow::initCam()
@@ -163,7 +163,8 @@ StreamWorker::StreamWorker(FlyCapture2::GigECamera* cam): m_cam(cam)
         return;
     }
 	cout << "Camera information given to StreamWorker" << endl;
-    itoa(camInfo.serialNumber, m_currVideoSettings.filename, 10);
+	cout << "Serial number: " << camInfo.serialNumber << endl;
+	itoa(camInfo.serialNumber, m_currVideoSettings.filename, 10);
     strcpy(m_currVideoSettings.fileExtension, "avi");
 }
 
@@ -185,8 +186,8 @@ void StreamWorker::run()
 		PrintError(error);
         return;
     }
-	cout << "Opened AVI file" << endl;
-	emit(recordingStarted(QString(m_currVideoSettings.filename) + QString(".avi")));
+	cout << "Opened AVI file:" << m_currVideoSettings.filename << endl;
+	emit(recordingStarted(QString(m_currVideoSettings.filename)));
 	m_currRecordingState = STARTED;
 
     while(GetRecorderState() == STARTED)

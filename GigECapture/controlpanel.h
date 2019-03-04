@@ -51,6 +51,7 @@ class ControlPanel: public QWidget
         QPushButton m_captureButton;
         QVector<int> m_serials;
 		QMap<int, Settings> m_settings;
+		QMap<int, FlyCapture2::PGRGuid*> m_guids;
 		QMap<int, FlyCapture2::GigECamera*> m_cameras;
 
         void startCapture();
