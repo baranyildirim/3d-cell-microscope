@@ -1,8 +1,12 @@
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
+#include <windows.h>
+
 #include <QApplication>
 #include <QSizePolicy>
 #include "mainwindow.h"
 #include <QThreadPool>
-#include <windows.h>
 
 void Console()
 {
@@ -26,8 +30,6 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 	MainWindow *w = new MainWindow;
-	w->setWindowModality(Qt::ApplicationModal);
-	w->show();
-	return a.exec();
 
+	return a.exec();
 }

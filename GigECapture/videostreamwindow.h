@@ -11,13 +11,22 @@
 #include <QThread>
 #include <QThreadPool>
 #include <QRunnable>
-#include <QMediaPlayer>
-#include <QMediaService>
-#include <QVideoWidget>
-#include <QMediaPlaylist>
 #include <QDialog>
+#include <QMainWindow>
+#include <QtAV>
+#include <QSizePolicy>
+#include <QtAVWidgets>
+#include <QHBoxLayout>
 #define MAX_PATH 260
 
+enum RecorderState
+{
+	STOPPED,
+	STARTED,
+	SAVING,
+	STOPPING,
+	ABORT_SAVING
+};
 
 
 class VideoStreamWindow : public QDialog
@@ -25,18 +34,22 @@ class VideoStreamWindow : public QDialog
 	Q_OBJECT
 public:
     explicit VideoStreamWindow(QWidget *parent = nullptr);
+	~VideoStreamWindow();
 	void setCamera(FlyCapture2::GigECamera* cam);
 public slots:
 	void handleRecordingStarted(QString dir);
 private:
-    void createStreamWindow();
     void initCam();
     void startStream();
     void stopStream();
+	void createStreamWindow();
     FlyCapture2::GigECamera* m_cam;
 
-    QMediaPlayer m_player;
-    QVideoWidget m_videoWidget;
+	QHBoxLayout m_layout;
+	QtAV::GLWidgetRenderer2 m_renderer;
+	QtAV::AVPlayer m_player;
+
+	RecorderState m_currRecordingState;
 };
 
 
@@ -50,7 +63,7 @@ public:
 class StreamWorker : public QObject, public QRunnable {
 	Q_OBJECT
 public:
-    StreamWorker(FlyCapture2::GigECamera* cam);
+    StreamWorker(FlyCapture2::GigECamera* cam, RecorderState& recorderState);
     void run() override;
 
 signals:
@@ -59,14 +72,6 @@ signals:
 
 private:
 
-    enum RecorderState
-    {
-        STOPPED,
-        STARTED,
-        SAVING,
-        STOPPING,
-        ABORT_SAVING
-    };
 
     struct VideoSettings
     {
@@ -79,24 +84,10 @@ private:
     RecorderState GetRecorderState();
 
     QMutex m_recorderBuffer;
-    RecorderState m_currRecordingState;
+    RecorderState& m_currRecordingState;
     VideoSettings m_currVideoSettings;
     FlyCapture2::GigECamera* m_cam;
     std::vector<FlyCapture2::Image> m_imageBuffer;
 };
 
-class GrabWorker : public QObject, public QRunnable {
-	Q_OBJECT
-	public:
-		GrabWorker(FlyCapture2::GigECamera* cam, std::vector<FlyCapture2::Image>& imageBuffer, QMutex& recorderBuffer);
-		void run() override;
-	signals:
-		void imageGrabbed(FlyCapture2::Image im);
-	private:
-		FlyCapture2::GigECamera* m_cam;
-		std::vector<FlyCapture2::Image>& m_imageBuffer;
-		FlyCapture2::Image m_rawImage;
-		FlyCapture2::Image m_processedImage;
-		QMutex& m_recorderBuffer;
-};
 #endif // VIDEOSTREAMWINDOW_H

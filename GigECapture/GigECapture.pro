@@ -2,6 +2,7 @@ QT += core gui
 QT += widgets
 QT += multimedia
 QT += multimediawidgets
+QT += avwidgets
 
 CONFIG += c++11
 CONFIG += console
@@ -23,7 +24,7 @@ INCLUDEPATH += $$PWD/include
 DEPENDPATH += $$PWD/lib64
 LIBS += -L"$$_PRO_FILE_PWD_/lib64/" -lopencv_core2413 -lopencv_highgui2413 -lopencv_imgproc2413
 LIBS += -L"$$_PRO_FILE_PWD_/lib64/" -lFlyCapture2
-
+LIBS += -L"$$_PRO_FILE_PWD_/bin/" -lQt5AV -lQt5AVWidgets
 
 HEADERS += \
     mainwindow.h \

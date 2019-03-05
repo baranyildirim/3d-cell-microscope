@@ -1,0 +1,127 @@
+************************************* Invoked: Mon Mar 4 19:31:17 2019
+[0] Arguments:  C:\Users\innovate\Downloads\QtAV1.11.0-VS2015x64.exe
+[2] Operations sanity check succeeded.
+[56] Loaded control script ":/metadata/installer-config/control_js.js"
+[56] Using control script: ":/metadata/installer-config/control_js.js"
+[59] Control script callback "IntroductionPageCallback" does not exist.
+[1215] Control script callback "TargetDirectoryPageCallback" does not exist.
+[19958] Control script callback "ComponentSelectionPageCallback" does not exist.
+[33329] Control script callback "StartMenuDirectoryPageCallback" does not exist.
+[34112] Tmp is on a different volume than the install folder. Tmp volume mount point: "C:\\" Free space available: "4.66 GiB" Install volume mount point: "F:\\" Free space available: "241.83 GiB"
+[34112] Installation space required: "71.20 MiB" Temporary space required: "0.00 bytes" Local repository size: "0.00 bytes"
+[34112] Control script callback "ReadyForInstallationPageCallback" does not exist.
+[34959] Control script callback "PerformInstallationPageCallback" does not exist.
+[34989] backup  operation: Mkdir
+[34989] \t- arguments: F:/Baran/QtAV
+[34989] Done
+[34989] perform  operation: Mkdir
+[34989] \t- arguments: F:/Baran/QtAV
+[34989] Done
+[34990] Install size: 4 components
+[35000] backup com.qtav.product operation: Extract
+[35000] \t- arguments: installer://com.qtav.product/1.11.0-0content.7z, F:\\Baran\\QtAV
+[35000] Done
+[35000] perform com.qtav.product operation: Extract
+[35000] \t- arguments: installer://com.qtav.product/1.11.0-0content.7z, F:\\Baran\\QtAV
+[35005] Done
+[35005] backup com.qtav.product operation: Extract
+[35005] \t- arguments: installer://com.qtav.product/1.11.0-0doc.7z, F:\\Baran\\QtAV
+[35005] Done
+[35005] perform com.qtav.product operation: Extract
+[35005] \t- arguments: installer://com.qtav.product/1.11.0-0doc.7z, F:\\Baran\\QtAV
+[35031] Done
+[35031] backup com.qtav.product operation: License
+[35031] \t- arguments: 
+[35031] Done
+[35032] perform com.qtav.product operation: License
+[35032] \t- arguments: 
+[35032] Done
+[35032] backup com.qtav.product.runtime operation: Extract
+[35032] \t- arguments: installer://com.qtav.product.runtime/1.11.0-0bin.7z, F:\\Baran\\QtAV
+[35032] Done
+[35032] perform com.qtav.product.runtime operation: Extract
+[35032] \t- arguments: installer://com.qtav.product.runtime/1.11.0-0bin.7z, F:\\Baran\\QtAV
+[36302] Done
+[36302] backup com.qtav.product.player operation: Extract
+[36302] \t- arguments: installer://com.qtav.product.player/1.11.0-0bin.7z, F:\\Baran\\QtAV
+[36302] Done
+[36302] perform com.qtav.product.player operation: Extract
+[36302] \t- arguments: installer://com.qtav.product.player/1.11.0-0bin.7z, F:\\Baran\\QtAV
+[36321] Done
+[36321] backup com.qtav.product.player operation: Extract
+[36321] \t- arguments: installer://com.qtav.product.player/1.11.0-0content.7z, F:\\Baran\\QtAV
+[36321] Done
+[36321] perform com.qtav.product.player operation: Extract
+[36321] \t- arguments: installer://com.qtav.product.player/1.11.0-0content.7z, F:\\Baran\\QtAV
+[36322] Done
+[36322] backup com.qtav.product.player operation: CreateShortcut
+[36322] \t- arguments: F:\\Baran\\QtAV/bin/player.exe, C:\\Users\\innovate\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\QtAV/QtAV.Player.lnk, workingDirectory=F:\\Baran\\QtAV/bin, iconPath=F:\\Baran\\QtAV/bin/player.exe, iconId=0
+[36322] Done
+[36322] perform com.qtav.product.player operation: CreateShortcut
+[36322] \t- arguments: F:\\Baran\\QtAV/bin/player.exe, C:\\Users\\innovate\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\QtAV/QtAV.Player.lnk, workingDirectory=F:\\Baran\\QtAV/bin, iconPath=F:\\Baran\\QtAV/bin/player.exe, iconId=0
+[36325] Done
+[36325] backup com.qtav.product.player operation: CreateShortcut
+[36325] \t- arguments: F:\\Baran\\QtAV/bin/QMLPlayer.exe, C:\\Users\\innovate\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\QtAV/QtAV.Player.QML.lnk, workingDirectory=F:\\Baran\\QtAV/bin, iconPath=F:\\Baran\\QtAV/bin/QMLPlayer.exe, iconId=0
+[36325] Done
+[36325] perform com.qtav.product.player operation: CreateShortcut
+[36325] \t- arguments: F:\\Baran\\QtAV/bin/QMLPlayer.exe, C:\\Users\\innovate\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\QtAV/QtAV.Player.QML.lnk, workingDirectory=F:\\Baran\\QtAV/bin, iconPath=F:\\Baran\\QtAV/bin/QMLPlayer.exe, iconId=0
+[36328] Done
+[36328] backup com.qtav.product.player operation: CreateShortcut
+[36328] \t- arguments: F:\\Baran\\QtAV/maintenancetool.exe, C:\\Users\\innovate\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\QtAV/QtAV.Uninstall.lnk, workingDirectory=F:\\Baran\\QtAV, iconPath=F:\\Baran\\QtAV/maintenancetool.exe, iconId=0
+[36328] Done
+[36329] perform com.qtav.product.player operation: CreateShortcut
+[36329] \t- arguments: F:\\Baran\\QtAV/maintenancetool.exe, C:\\Users\\innovate\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\QtAV/QtAV.Uninstall.lnk, workingDirectory=F:\\Baran\\QtAV, iconPath=F:\\Baran\\QtAV/maintenancetool.exe, iconId=0
+[36330] Done
+[36331] backup com.qtav.product.player operation: GlobalConfig
+[36331] \t- arguments: HKEY_CURRENT_USER\\SOFTWARE\\Classes\\*\\shell\\Open With QtAV\\command, Default, \"F:\\Baran\\QtAV/bin/player.exe\" -vo gl -f \"%1\"
+[36331] Done
+[36331] perform com.qtav.product.player operation: GlobalConfig
+[36331] \t- arguments: HKEY_CURRENT_USER\\SOFTWARE\\Classes\\*\\shell\\Open With QtAV\\command, Default, \"F:\\Baran\\QtAV/bin/player.exe\" -vo gl -f \"%1\"
+[36331] Done
+[36331] backup com.qtav.product.player operation: GlobalConfig
+[36331] \t- arguments: HKEY_CURRENT_USER\\SOFTWARE\\Classes\\*\\shell\\Open With QtAV QML\\command, Default, \"F:\\Baran\\QtAV/bin/QMLPlayer.exe\" -f \"%1\"
+[36331] Done
+[36331] perform com.qtav.product.player operation: GlobalConfig
+[36331] \t- arguments: HKEY_CURRENT_USER\\SOFTWARE\\Classes\\*\\shell\\Open With QtAV QML\\command, Default, \"F:\\Baran\\QtAV/bin/QMLPlayer.exe\" -f \"%1\"
+[36332] Done
+[36332] backup com.qtav.product.dev operation: Extract
+[36332] \t- arguments: installer://com.qtav.product.dev/1.11.0-0bin.7z, F:\\Baran\\QtAV
+[36332] Done
+[36332] perform com.qtav.product.dev operation: Extract
+[36332] \t- arguments: installer://com.qtav.product.dev/1.11.0-0bin.7z, F:\\Baran\\QtAV
+[36386] Done
+[36386] backup com.qtav.product.dev operation: Extract
+[36386] \t- arguments: installer://com.qtav.product.dev/1.11.0-0content.7z, F:\\Baran\\QtAV
+[36386] Done
+[36386] perform com.qtav.product.dev operation: Extract
+[36386] \t- arguments: installer://com.qtav.product.dev/1.11.0-0content.7z, F:\\Baran\\QtAV
+[36387] Done
+[36387] backup com.qtav.product.dev operation: Extract
+[36387] \t- arguments: installer://com.qtav.product.dev/1.11.0-0include.7z, F:\\Baran\\QtAV
+[36387] Done
+[36387] perform com.qtav.product.dev operation: Extract
+[36387] \t- arguments: installer://com.qtav.product.dev/1.11.0-0include.7z, F:\\Baran\\QtAV
+[36407] Done
+[36407] backup com.qtav.product.dev operation: Extract
+[36407] \t- arguments: installer://com.qtav.product.dev/1.11.0-0lib.7z, F:\\Baran\\QtAV
+[36407] Done
+[36407] perform com.qtav.product.dev operation: Extract
+[36407] \t- arguments: installer://com.qtav.product.dev/1.11.0-0lib.7z, F:\\Baran\\QtAV
+[36415] Done
+[36416] backup com.qtav.product.dev operation: Extract
+[36416] \t- arguments: installer://com.qtav.product.dev/1.11.0-0mkspecs.7z, F:\\Baran\\QtAV
+[36416] Done
+[36416] perform com.qtav.product.dev operation: Extract
+[36416] \t- arguments: installer://com.qtav.product.dev/1.11.0-0mkspecs.7z, F:\\Baran\\QtAV
+[36417] Done
+[36417] backup com.qtav.product.dev operation: Extract
+[36417] \t- arguments: installer://com.qtav.product.dev/1.11.0-0qml.7z, F:\\Baran\\QtAV
+[36417] Done
+[36417] perform com.qtav.product.dev operation: Extract
+[36417] \t- arguments: installer://com.qtav.product.dev/1.11.0-0qml.7z, F:\\Baran\\QtAV
+[36424] Done
+[36426] Writing maintenance tool: "F:\\Baran\\QtAV/maintenancetool.exe.new"
+[36454] Wrote permissions for maintenance tool.
+[36490] Maintenance tool restart: false.
+[36491] SHOW FINISHED PAGE
+[36492] Control script callback "FinishedPageCallback" does not exist.

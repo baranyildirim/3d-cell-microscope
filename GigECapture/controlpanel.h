@@ -14,8 +14,8 @@
 #include "videostreamwindow.h"
 #include "helper.h"
 #include <FlyCapture2.h>
-
-class ControlPanel: public QWidget
+#include <QDialog>
+class ControlPanel: public QDialog
 {
     Q_OBJECT
     public:

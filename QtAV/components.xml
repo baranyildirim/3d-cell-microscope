@@ -1,0 +1,50 @@
+<Packages>
+    <ApplicationName>QtAV</ApplicationName>
+    <ApplicationVersion>1.0.0</ApplicationVersion>
+    <Package>
+        <Name>com.qtav.product</Name>
+        <Pixmap></Pixmap>
+        <Title>QtAV</Title>
+        <Description>Install QtAV multimedia library</Description>
+        <Version>1.11.0-0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2019-03-04</InstallDate>
+        <Size>335193</Size>
+        <Dependencies></Dependencies>
+    </Package>
+    <Package>
+        <Name>com.qtav.product.runtime</Name>
+        <Pixmap></Pixmap>
+        <Title>Runtime library</Title>
+        <Description>Install QtAV runtime library.</Description>
+        <Version>1.11.0-0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2019-03-04</InstallDate>
+        <Size>59787525</Size>
+        <Dependencies></Dependencies>
+        <ForcedInstallation>true</ForcedInstallation>
+    </Package>
+    <Package>
+        <Name>com.qtav.product.player</Name>
+        <Pixmap></Pixmap>
+        <Title>Player</Title>
+        <Description>Default player.</Description>
+        <Version>1.11.0-0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2019-03-04</InstallDate>
+        <Size>1020885</Size>
+        <Dependencies></Dependencies>
+        <ForcedInstallation>true</ForcedInstallation>
+    </Package>
+    <Package>
+        <Name>com.qtav.product.dev</Name>
+        <Pixmap></Pixmap>
+        <Title>Development files</Title>
+        <Description>Install QtAV headers and lib.</Description>
+        <Version>1.11.0-0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2019-03-04</InstallDate>
+        <Size>6724607</Size>
+        <Dependencies></Dependencies>
+    </Package>
+</Packages>

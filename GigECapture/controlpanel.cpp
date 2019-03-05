@@ -1,9 +1,9 @@
 #include "controlpanel.h"
 
-ControlPanel::ControlPanel(QWidget *parent)
+ControlPanel::ControlPanel(QWidget *parent): QDialog(parent)
 {
     this->setLayout(&m_mainLayout);
-
+	setWindowModality(Qt::NonModal);
     m_exposureEdit.setMaximumWidth(60);
     m_gainEdit.setMaximumWidth(60);
     m_framerateEdit.setMaximumWidth(60);

@@ -1,11 +1,13 @@
 #include "videostreamwindow.h"
 
-VideoStreamWindow::VideoStreamWindow(QWidget *parent) : m_cam(nullptr)
+VideoStreamWindow::VideoStreamWindow(QWidget *parent) : m_cam(nullptr), QDialog(parent)
 {
     using namespace std;
     using namespace FlyCapture2;
-
 	cout << "Constructing video stream window";
+	setAttribute(Qt::WA_DeleteOnClose);
+	setFixedSize(QSize(640, 480));
+	setLayout(&m_layout);
 	createStreamWindow();
 }
 
@@ -13,8 +15,14 @@ void VideoStreamWindow::handleRecordingStarted(QString dir) {
 	
 	QUrl videoURL = QUrl::fromLocalFile(dir + QString("-0000.avi"));
 	std::cout << (videoURL.fileName().toStdString());
-	m_player.setMedia(videoURL);
+	m_player.setFile(dir + QString("-0000.avi"));
+	Sleep(10000);
 	m_player.play();
+}
+
+VideoStreamWindow::~VideoStreamWindow()
+{
+	stopStream();
 }
 
 void VideoStreamWindow::setCamera(FlyCapture2::GigECamera * cam)
@@ -24,10 +32,6 @@ void VideoStreamWindow::setCamera(FlyCapture2::GigECamera * cam)
 	startStream();
 }
 
-void VideoStreamWindow::createStreamWindow()
-{
-
-}
 
 void VideoStreamWindow::initCam()
 {
@@ -89,13 +93,13 @@ void VideoStreamWindow::initCam()
         PrintError( error );
         return;
     }
-
+	
     GigEImageSettings imageSettings;
     imageSettings.offsetX = 0;
     imageSettings.offsetY = 0;
     imageSettings.height = imageSettingsInfo.maxHeight;
     imageSettings.width = imageSettingsInfo.maxWidth;
-    imageSettings.pixelFormat = PIXEL_FORMAT_MONO8;
+	imageSettings.pixelFormat = PIXEL_FORMAT_422YUV8;
 
     cout << "Setting GigE image settings..." << endl;
 
@@ -117,13 +121,17 @@ void VideoStreamWindow::startStream()
     Error error;
     cout << "Starting image capture..." << endl;
 
+	m_currRecordingState = RecorderState::STARTED;
+
     // Start capturing images
+	
     error = m_cam->StartCapture();
     if (error != PGRERROR_OK)
     {
         return;
     }
-    StreamWorker* worker = new StreamWorker(m_cam);
+
+    StreamWorker* worker = new StreamWorker(m_cam, m_currRecordingState);
 	connect(worker, &StreamWorker::recordingStarted, this, &VideoStreamWindow::handleRecordingStarted);
     QThreadPool::globalInstance()->start(worker);
 }
@@ -133,6 +141,7 @@ void VideoStreamWindow::stopStream()
     using namespace std;
     using namespace FlyCapture2;
     cout << "Stopping capture" << endl;
+	m_currRecordingState = RecorderState::STOPPED;
     Error error;
     // Stop capturing images
     error = m_cam->StopCapture();
@@ -142,16 +151,25 @@ void VideoStreamWindow::stopStream()
         return;
     }
 
-    // Disconnect the camera
-    error = m_cam->Disconnect();
-    if (error != PGRERROR_OK)
-    {
-        PrintError( error );
-        return;
-    }
 }
 
-StreamWorker::StreamWorker(FlyCapture2::GigECamera* cam): m_cam(cam)
+void VideoStreamWindow::createStreamWindow()
+{
+	QVariantHash fmt_opt;
+	fmt_opt["format_whitelist"] = "rawvideo"; // since QtAV 1.6 (or since commit e828f9c4)
+	fmt_opt["video_size"] = "1280x960";
+	fmt_opt["framerate"] = 15;
+
+	m_renderer.setParent(this);
+	m_player.setParent(this);
+	m_renderer.setContentsMargins(QMargins(0, 0, 0, 0));
+	m_layout.addWidget(&m_renderer);
+	m_renderer.show();
+	m_player.setRenderer(&m_renderer);
+	m_player.setOptionsForFormat(fmt_opt);
+}
+
+StreamWorker::StreamWorker(FlyCapture2::GigECamera* cam, RecorderState& recorderState): m_cam(cam), m_currRecordingState(recorderState)
 {
     using namespace std;
     using namespace FlyCapture2;
@@ -188,7 +206,6 @@ void StreamWorker::run()
     }
 	cout << "Opened AVI file:" << m_currVideoSettings.filename << endl;
 	emit(recordingStarted(QString(m_currVideoSettings.filename)));
-	m_currRecordingState = STARTED;
 
     while(GetRecorderState() == STARTED)
     {
@@ -286,7 +303,7 @@ void StreamWorker::SaveImageToVideo(FlyCapture2::AVIRecorder *aviRecorder, FlyCa
     }
 }
 
-StreamWorker::RecorderState StreamWorker::GetRecorderState()
+RecorderState StreamWorker::GetRecorderState()
 {
     return m_currRecordingState;
 }

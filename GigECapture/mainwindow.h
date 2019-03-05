@@ -5,17 +5,19 @@
 #include "controlpanel.h"
 #include "videostreamwindow.h"
 #include <FlyCapture2.h>
+#include <QHBoxLayout>
 
 
-class MainWindow : public QMainWindow
+class MainWindow : public QObject
 {
     Q_OBJECT
     public:
-        explicit MainWindow(QWidget *parent = nullptr);
+        explicit MainWindow();
 	public slots:
 		void handleStartCaptureMain(FlyCapture2::GigECamera* cam);
     private:
-        ControlPanel m_controlPanel;
+		QHBoxLayout m_layout;
+        ControlPanel* m_controlPanel;
         VideoStreamWindow* m_videoWindow;
 
     public slots:
