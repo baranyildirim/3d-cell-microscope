@@ -5,10 +5,10 @@ MainWindow::MainWindow()
 	m_controlPanel = new ControlPanel();
 	m_controlPanel->setModal(false);
 	m_controlPanel->show();
-	connect(m_controlPanel, &ControlPanel::startCaptureMain, this, &MainWindow::handleStartCaptureMain);
+	connect(m_controlPanel, &ControlPanel::startStreamMain, this, &MainWindow::handleStartStreamMain);
 }
 
-void MainWindow::handleStartCaptureMain(FlyCapture2::GigECamera* cam) {
+void MainWindow::handleStartStreamMain(FlyCapture2::GigECamera* cam) {
 	using namespace std;
 	using namespace FlyCapture2;
 	m_videoWindow = new VideoStreamWindow();

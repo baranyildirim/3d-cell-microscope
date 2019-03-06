@@ -18,8 +18,8 @@ ControlPanel::ControlPanel(QWidget *parent): QDialog(parent)
 
     m_leftFormLayout.addRow(tr("&Exposure (EV):"), &m_exposureEdit);
     m_leftFormLayout.addRow(tr("&Gain (dB):"), &m_gainEdit);
-    m_leftFormLayout.addRow(tr("&Framerate:"), &m_framerateEdit);
-    m_leftFormLayout.addRow(tr("&Shutter Time:"), &m_shutterTimeEdit);
+    m_leftFormLayout.addRow(tr("&Framerate (fps):"), &m_framerateEdit);
+    m_leftFormLayout.addRow(tr("&Shutter Time (ms):"), &m_shutterTimeEdit);
     m_leftFormLayout.addRow(tr("&Image-X Offset:"), &m_imageXOffsetEdit);
     m_leftFormLayout.addRow(tr("&Image-Y Offset:"), &m_imageYOffsetEdit);
 
@@ -34,18 +34,23 @@ ControlPanel::ControlPanel(QWidget *parent): QDialog(parent)
     m_panelLayout.addLayout(&m_leftFormLayout);
     m_panelLayout.addLayout(&m_rightFormLayout);
 
-    m_applySettingsButton.setText(tr("&Apply Settings"));
-    m_captureButton.setText(tr("&Start Capture"));
+	m_applySettingsOneButton.setText(tr("&Apply Settings for Current Camera"));
+    m_applySettingsAllButton.setText(tr("&Apply Settings for All Cameras"));
+	m_captureFrameButton.setText(tr("&Capture Frames"));
+    m_startStreamButton.setText(tr("&Start Stream"));
 
-    m_buttonLayout.addWidget(&m_applySettingsButton);
-    m_buttonLayout.addWidget(&m_captureButton);
-
+    m_buttonLayout.addWidget(&m_applySettingsOneButton, 0, 0);
+	m_buttonLayout.addWidget(&m_captureFrameButton, 0, 1);
+	m_buttonLayout.addWidget(&m_applySettingsAllButton, 1, 0);
+	m_buttonLayout.addWidget(&m_startStreamButton, 1, 1);
 
     m_cameraSelectorLabel.setText(tr("&Camera ID:"));
     m_cameraSelectorLabel.setBuddy(&m_cameraSelector);
     m_cameraSelector.setMaximumWidth(100);
     m_cameraSelectorLayout.addWidget(&m_cameraSelectorLabel);
     m_cameraSelectorLayout.addWidget(&m_cameraSelector);
+	m_refreshCamerasButton.setText(tr("&Refresh Cameras"));
+	m_cameraSelectorLayout.addWidget(&m_refreshCamerasButton);
     m_cameraSelectorLayout.setAlignment(Qt::AlignCenter);
 
 
@@ -53,39 +58,63 @@ ControlPanel::ControlPanel(QWidget *parent): QDialog(parent)
     m_mainLayout.addLayout(&m_panelLayout);
     m_mainLayout.addLayout(&m_buttonLayout);
 
-	connect(&m_captureButton, &QPushButton::released, this, &ControlPanel::onCaptureClicked);
-    connect(&m_exposureEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_gainEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_framerateEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_shutterTimeEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_imageXOffsetEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_imageYOffsetEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_packetSizeEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_packetDelayEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_numberOfFramesEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_imageWidthEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
-    connect(&m_imageHeightEdit, &QLineEdit::textEdited, this, &ControlPanel::onSettingsChanged);
+	m_exposureEdit.setDecimals(3);
+	m_exposureEdit.setRange(-7.5, 2.4);
+
+	m_gainEdit.setDecimals(3);
+	m_gainEdit.setRange(-5.75, 13.0);
+
+	m_framerateEdit.setRange(0, 52.00);
+	m_framerateEdit.setDecimals(3);
+
+	m_shutterTimeEdit.setDecimals(3);
+	m_shutterTimeEdit.setRange(0.020, 19.20);
+
+	m_packetSizeEdit.setRange(0, 10000);
+	m_packetDelayEdit.setRange(0, 10000);
+	m_imageWidthEdit.setRange(0, 10000);
+	m_imageHeightEdit.setRange(0, 10000);
+
+	connect(&m_cameraSelector, &QComboBox::currentTextChanged, this, &ControlPanel::onSelectedCameraChanged);
+	connect(&m_applySettingsOneButton, &QPushButton::released, this, &ControlPanel::onApplySettingsOneClicked);
+	connect(&m_applySettingsAllButton, &QPushButton::released, this, &ControlPanel::onApplySettingsAllClicked);
+	connect(&m_refreshCamerasButton, &QPushButton::released, this, &ControlPanel::onRefreshCamerasClicked);
+	connect(&m_startStreamButton, &QPushButton::released, this, &ControlPanel::onStartStreamClicked);
+    connect(&m_exposureEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_gainEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_framerateEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_shutterTimeEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_imageXOffsetEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_imageYOffsetEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_packetSizeEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_packetDelayEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_numberOfFramesEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_imageWidthEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_imageHeightEdit, QOverload<const QString&>::of(&QSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
 
     getAllCameras();
     for(int i = 0; i < m_serials.size(); i++){
         m_cameraSelector.addItem(QString::number(m_serials[i]));
     }
 
-	if (m_serials.size() < 1)
+	if (m_serials.size() < 1) {
+		m_startStreamButton.setEnabled(false);
+		m_applySettingsAllButton.setEnabled(false);
 		return;
+	}
 
 	Settings initialSettings = m_settings[m_cameraSelector.currentText().toInt()];
-	m_exposureEdit.setText(QString::number(initialSettings.exposure));
-	m_gainEdit.setText(QString::number(initialSettings.gain));
-	m_framerateEdit.setText(QString::number(initialSettings.framerate));
-	m_shutterTimeEdit.setText(QString::number(initialSettings.shutterTime));
-	m_imageXOffsetEdit.setText(QString::number(initialSettings.imageXOffset));
-	m_imageYOffsetEdit.setText(QString::number(initialSettings.imageYOffset));
-	m_packetSizeEdit.setText(QString::number(initialSettings.packetSize));
-	m_packetDelayEdit.setText(QString::number(initialSettings.packetDelay));
-	m_numberOfFramesEdit.setText(QString::number(initialSettings.numberOfFrames));
-	m_imageWidthEdit.setText(QString::number(initialSettings.imageWidth));
-	m_imageHeightEdit.setText(QString::number(initialSettings.imageHeight));
+	m_exposureEdit.setValue(initialSettings.exposure);
+	m_gainEdit.setValue(initialSettings.gain);
+	m_framerateEdit.setValue(initialSettings.framerate);
+	m_shutterTimeEdit.setValue(initialSettings.shutterTime);
+	m_imageXOffsetEdit.setValue(initialSettings.imageXOffset);
+	m_imageYOffsetEdit.setValue(initialSettings.imageYOffset);
+	m_packetSizeEdit.setValue(initialSettings.packetSize);
+	m_packetDelayEdit.setValue(initialSettings.packetDelay);
+	m_numberOfFramesEdit.setValue(initialSettings.numberOfFrames);
+	m_imageWidthEdit.setValue(initialSettings.imageWidth);
+	m_imageHeightEdit.setValue(initialSettings.imageHeight);
 }
 
 void ControlPanel::onSettingsChanged()
@@ -106,51 +135,114 @@ void ControlPanel::onSettingsChanged()
 	m_settings[serial] = currSettings;
 }
 
-void ControlPanel::onCaptureClicked()
+void ControlPanel::onStartStreamClicked()
 {
-	startCapture();
+	startStream();
 }
 
-void ControlPanel::onApplySettingsClicked()
+void ControlPanel::onApplySettingsOneClicked()
 {
-	applySettings();
+	applySettings(m_cameraSelector.currentText().toInt());
 }
 
-void ControlPanel::startCapture()
+void ControlPanel::onApplySettingsAllClicked()
+{
+	for(int i = 0; i < m_serials.size(); i++)
+		applySettings(m_serials[i]);
+}
+
+void ControlPanel::onRefreshCamerasClicked()
+{
+	getAllCameras();
+
+	if (m_serials.size() < 1) {
+		m_startStreamButton.setEnabled(false);
+		m_applySettingsAllButton.setEnabled(false);
+	}
+	else {
+		m_startStreamButton.setEnabled(true);
+		m_applySettingsAllButton.setEnabled(true);
+	}
+}
+
+void ControlPanel::onSelectedCameraChanged()
+{
+	updateDisplayedSettings();
+}
+
+void ControlPanel::startStream()
 {
     using namespace std;
     using namespace FlyCapture2;
 	FlyCapture2::GigECamera* currentCamera = m_cameras[m_cameraSelector.currentText().toInt()];
 	cout << "Starting capture for: " << m_cameraSelector.currentText().toInt();
-	emit(startCaptureMain(currentCamera));
+	emit(startStreamMain(currentCamera));
 }
 
-void ControlPanel::applySettings()
+void ControlPanel::applySettings(int serial)
 {
+	using namespace std;
+	using namespace FlyCapture2;
 
+	GigECamera* cam = m_cameras[serial];
+	Settings s = m_settings[serial];
+	GigEConfig info;
+	GigEImageSettings imageSettings;
+	FC2Config config;
+	EmbeddedImageInfo embededInfo;
+	GigEStreamChannel channel;
+
+	cam->GetGigEConfig(&info);
+	cam->GetGigEImageSettings(&imageSettings);
+	cam->GetConfiguration(&config);
+	cam->GetEmbeddedImageInfo(&embededInfo);
+	cam->GetGigEStreamChannelInfo(0, &channel);
+
+	Property exposure;
+	exposure.type = PropertyType::AUTO_EXPOSURE;
+	cam->GetProperty(&exposure);
+	exposure.absControl = true;
+	exposure.autoManualMode = false;
+	exposure.absValue = s.exposure;
+
+	Property shutter;
+	shutter.type = PropertyType::SHUTTER;
+	cam->GetProperty(&shutter);
+	shutter.absControl = true;
+	shutter.autoManualMode = false;
+	shutter.absValue = s.shutterTime;
+
+	Property framerate;
+	framerate.type = PropertyType::FRAME_RATE;
+	cam->GetProperty(&framerate);
+
+	framerate.absControl = true;
+	framerate.autoManualMode = false;
+	framerate.absValue = s.framerate;
+
+	Property gain;
+	gain.type = PropertyType::GAIN;
+	cam->GetProperty(&gain);
+	gain.absControl = true;
+	gain.autoManualMode = false;
+	gain.absValue = s.framerate;
+
+	cam->SetProperty(&exposure);
+	cam->SetProperty(&shutter);
+	cam->SetProperty(&framerate);
+	cam->SetProperty(&gain);
+	cout << "Settings applied to camera: " << serial << endl;
 }
 
 void ControlPanel::getAllCameras()
-{    using namespace std;
+{   
+	 using namespace std;
      using namespace FlyCapture2;
      PrintBuildInfo();
 
      Error error;
 
-     // Since this application saves images in the current folder
-     // we must ensure that we have permission to write to this folder.
-     // If we do not have permission, fail right away.
-     FILE* tempFile = fopen("tmp", "w+");
-     if (tempFile == NULL)
-     {
-         cout << "Failed to create file in current folder.  Please check permissions." << endl;
-         return;
-     }
-     fclose(tempFile);
-     remove("tmp");
-
      BusManager busMgr;
-
      CameraInfo camInfo[20];
      unsigned int numCamInfo = 20;
      error = BusManager::DiscoverGigECameras( camInfo, &numCamInfo );
@@ -160,7 +252,7 @@ void ControlPanel::getAllCameras()
          return;
      }
 
-
+		
      cout << "Number of cameras discovered: " << numCamInfo << endl;
 	
 
@@ -242,4 +334,20 @@ void ControlPanel::getAllCameras()
 		m_settings[m_serials[i]] = settings;
 	 }
 
+}
+
+void ControlPanel::updateDisplayedSettings()
+{
+	Settings settings = m_settings[m_cameraSelector.currentText().toInt()];
+	m_exposureEdit.setValue(settings.exposure);
+	m_gainEdit.setValue(settings.gain);
+	m_framerateEdit.setValue(settings.framerate);
+	m_shutterTimeEdit.setValue(settings.shutterTime);
+	m_imageXOffsetEdit.setValue(settings.imageXOffset);
+	m_imageYOffsetEdit.setValue(settings.imageYOffset);
+	m_packetSizeEdit.setValue(settings.packetSize);
+	m_packetDelayEdit.setValue(settings.packetDelay);
+	m_numberOfFramesEdit.setValue(settings.numberOfFrames);
+	m_imageWidthEdit.setValue(settings.imageWidth);
+	m_imageHeightEdit.setValue(settings.imageHeight);
 }

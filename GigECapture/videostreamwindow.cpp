@@ -155,18 +155,17 @@ void VideoStreamWindow::stopStream()
 
 void VideoStreamWindow::createStreamWindow()
 {
-	QVariantHash fmt_opt;
-	fmt_opt["format_whitelist"] = "rawvideo"; // since QtAV 1.6 (or since commit e828f9c4)
-	fmt_opt["video_size"] = "1280x960";
-	fmt_opt["framerate"] = 15;
 
 	m_renderer.setParent(this);
 	m_player.setParent(this);
-	m_renderer.setContentsMargins(QMargins(0, 0, 0, 0));
+	
+	
+
+	m_player.setRenderer(&m_renderer);
+	m_player.setFrameRate(10000.0);
+
 	m_layout.addWidget(&m_renderer);
 	m_renderer.show();
-	m_player.setRenderer(&m_renderer);
-	m_player.setOptionsForFormat(fmt_opt);
 }
 
 StreamWorker::StreamWorker(FlyCapture2::GigECamera* cam, RecorderState& recorderState): m_cam(cam), m_currRecordingState(recorderState)

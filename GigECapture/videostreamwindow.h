@@ -88,6 +88,7 @@ private:
     VideoSettings m_currVideoSettings;
     FlyCapture2::GigECamera* m_cam;
     std::vector<FlyCapture2::Image> m_imageBuffer;
+	QByteArray m_byteBuffer;
 };
 
 #endif // VIDEOSTREAMWINDOW_H

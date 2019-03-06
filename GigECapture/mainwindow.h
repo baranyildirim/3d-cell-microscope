@@ -14,7 +14,7 @@ class MainWindow : public QObject
     public:
         explicit MainWindow();
 	public slots:
-		void handleStartCaptureMain(FlyCapture2::GigECamera* cam);
+		void handleStartStreamMain(FlyCapture2::GigECamera* cam);
     private:
 		QHBoxLayout m_layout;
         ControlPanel* m_controlPanel;
