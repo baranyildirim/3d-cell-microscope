@@ -22,6 +22,8 @@
 #include <QComboBox>
 #include <QCheckBox>
 
+#define MASTER_SN 15635662
+
 class ControlPanel: public QDialog
 {
     Q_OBJECT

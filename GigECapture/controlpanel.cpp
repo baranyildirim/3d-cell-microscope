@@ -80,7 +80,8 @@ ControlPanel::ControlPanel(QWidget *parent): QDialog(parent)
 	connect(&m_applySettingsAllButton, &QPushButton::released, this, &ControlPanel::onApplySettingsAllClicked);
 	connect(&m_refreshCamerasButton, &QPushButton::released, this, &ControlPanel::onRefreshCamerasClicked);
 	connect(&m_startStreamButton, &QPushButton::released, this, &ControlPanel::onStartStreamClicked);
-    connect(&m_exposureEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
+    connect(&m_captureFrameButton, &QPushButton::released, this, &ControlPanel::onCaptureFramesClicked);
+	connect(&m_exposureEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
     connect(&m_gainEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
     connect(&m_framerateEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
     connect(&m_shutterTimeEdit, QOverload<const QString&>::of(&QDoubleSpinBox::valueChanged), this, &ControlPanel::onSettingsChanged);
@@ -137,6 +138,9 @@ void ControlPanel::onSettingsChanged()
 
 void ControlPanel::onCaptureFramesClicked()
 {
+	using namespace std;
+	using namespace FlyCapture2;
+
 	for(int i = 0; i < m_serials.size(); i++)
 		captureFrame(m_serials[i]);
 }
@@ -417,5 +421,35 @@ void ControlPanel::updateDisplayedSettings()
 
 void ControlPanel::captureFrame(int serial)
 {
+	using namespace std;
+	using namespace FlyCapture2;
+	Image buffImage;
+	Error error;
+	char fileName[MAX_PATH];
+	char fileExtension[5] = ".PNG";
+	error = m_cameras[serial]->StartCapture();
+	if (error != PGRERROR_OK)
+	{
+		PrintError(error);
+		return;
+	}
 
+	error = m_cameras[serial]->RetrieveBuffer(&buffImage);
+	if (error != PGRERROR_OK)
+	{
+		PrintError(error);
+		return;
+	}
+	itoa(serial, fileName, 10);
+	strcat(fileName, fileExtension);
+	buffImage.Save(fileName, FlyCapture2::ImageFileFormat::PNG);
+
+	cout << "Capture frame for: " << serial << endl;
+
+	error = m_cameras[serial]->StopCapture();
+	if (error != PGRERROR_OK)
+	{
+		PrintError(error);
+		return;
+	}
 }
