@@ -135,6 +135,12 @@ void ControlPanel::onSettingsChanged()
 	m_settings[serial] = currSettings;
 }
 
+void ControlPanel::onCaptureFramesClicked()
+{
+	for(int i = 0; i < m_serials.size(); i++)
+		captureFrame(m_serials[i]);
+}
+
 void ControlPanel::onStartStreamClicked()
 {
 	startStream();
@@ -147,8 +153,13 @@ void ControlPanel::onApplySettingsOneClicked()
 
 void ControlPanel::onApplySettingsAllClicked()
 {
+	Settings toBeApplied = m_settings[m_cameraSelector.currentText().toInt()];
+	for (int i = 0; i < m_serials.size(); i++)
+		m_settings[m_serials[i]] = toBeApplied;
+
 	for(int i = 0; i < m_serials.size(); i++)
 		applySettings(m_serials[i]);
+	refreshSettings();
 }
 
 void ControlPanel::onRefreshCamerasClicked()
@@ -167,7 +178,59 @@ void ControlPanel::onRefreshCamerasClicked()
 
 void ControlPanel::onSelectedCameraChanged()
 {
+	refreshSettings();
 	updateDisplayedSettings();
+}
+
+void ControlPanel::refreshSettings()
+{
+	using namespace std;
+	using namespace FlyCapture2;
+	for (int i = 0; i < m_serials.size(); i++) {
+		GigECamera* cam = m_cameras[m_serials[i]];
+		GigEConfig info;
+		GigEImageSettings imageSettings;
+		FC2Config config;
+		EmbeddedImageInfo embededInfo;
+		GigEStreamChannel channel;
+
+		cam->GetGigEConfig(&info);
+		cam->GetGigEImageSettings(&imageSettings);
+		cam->GetConfiguration(&config);
+		cam->GetEmbeddedImageInfo(&embededInfo);
+		cam->GetGigEStreamChannelInfo(0, &channel);
+
+		Property exposure;
+		exposure.type = PropertyType::AUTO_EXPOSURE;
+		cam->GetProperty(&exposure);
+
+		Property shutter;
+		shutter.type = PropertyType::SHUTTER;
+		cam->GetProperty(&shutter);
+
+		Property framerate;
+		framerate.type = PropertyType::FRAME_RATE;
+		cam->GetProperty(&framerate);
+
+		Property gain;
+		gain.type = PropertyType::GAIN;
+		cam->GetProperty(&gain);
+
+		Settings settings;
+		settings.cameraID = m_serials[i];
+		settings.exposure = exposure.absValue;
+		settings.framerate = framerate.absValue;
+		settings.gain = gain.absValue;
+		settings.imageHeight = imageSettings.height;
+		settings.imageWidth = imageSettings.width;
+		settings.imageXOffset = imageSettings.offsetX;
+		settings.imageYOffset = imageSettings.offsetY;
+		settings.packetDelay = channel.interPacketDelay;
+		settings.packetSize = channel.packetSize;
+		settings.shutterTime = shutter.absValue;
+
+		m_settings[m_serials[i]] = settings;
+	}
 }
 
 void ControlPanel::startStream()
@@ -350,4 +413,9 @@ void ControlPanel::updateDisplayedSettings()
 	m_numberOfFramesEdit.setValue(settings.numberOfFrames);
 	m_imageWidthEdit.setValue(settings.imageWidth);
 	m_imageHeightEdit.setValue(settings.imageHeight);
+}
+
+void ControlPanel::captureFrame(int serial)
+{
+
 }

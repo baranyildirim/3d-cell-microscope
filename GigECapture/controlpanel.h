@@ -32,6 +32,7 @@ class ControlPanel: public QDialog
 
     public slots:
         void onSettingsChanged();
+		void onCaptureFramesClicked();
         void onStartStreamClicked();
 		void onApplySettingsOneClicked();
         void onApplySettingsAllClicked();
@@ -68,10 +69,12 @@ class ControlPanel: public QDialog
 		QMap<int, FlyCapture2::PGRGuid*> m_guids;
 		QMap<int, FlyCapture2::GigECamera*> m_cameras;
 
+		void refreshSettings();
         void startStream();
         void applySettings(int serial);
         void getAllCameras();
 		void updateDisplayedSettings();
+		void captureFrame(int serial);
 };
 
 #endif // CONTROLPANEL_H

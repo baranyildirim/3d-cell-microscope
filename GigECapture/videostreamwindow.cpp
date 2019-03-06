@@ -16,7 +16,7 @@ void VideoStreamWindow::handleRecordingStarted(QString dir) {
 	QUrl videoURL = QUrl::fromLocalFile(dir + QString("-0000.avi"));
 	std::cout << (videoURL.fileName().toStdString());
 	m_player.setFile(dir + QString("-0000.avi"));
-	Sleep(10000);
+	Sleep(1000);
 	m_player.play();
 }
 
@@ -158,11 +158,17 @@ void VideoStreamWindow::createStreamWindow()
 
 	m_renderer.setParent(this);
 	m_player.setParent(this);
-	
-	
 
 	m_player.setRenderer(&m_renderer);
-	m_player.setFrameRate(10000.0);
+	m_player.setFrameRate(15);
+
+	QVariantHash fmt_opt;
+	fmt_opt["format_whitelist"] = "rawvideo"; // since QtAV 1.6 (or since commit e828f9c4)
+	fmt_opt["video_size"] = "1280x960";
+	fmt_opt["pixel_format"] = "rgb24";
+	fmt_opt["framerate"] = 15;
+	m_player.setOptionsForFormat(fmt_opt);
+	m_player.setFrameRate(15);
 
 	m_layout.addWidget(&m_renderer);
 	m_renderer.show();
@@ -185,6 +191,13 @@ StreamWorker::StreamWorker(FlyCapture2::GigECamera* cam, RecorderState& recorder
     strcpy(m_currVideoSettings.fileExtension, "avi");
 }
 
+StreamWorker::~StreamWorker()
+{
+	using namespace std;
+	using namespace FlyCapture2;
+	m_aviRecorder.AVIClose();
+}
+
 void StreamWorker::run()
 {
     using namespace std;
@@ -194,10 +207,10 @@ void StreamWorker::run()
     Image image;
 
 
-    AVIRecorder aviRecorder;
+
     AVIOption aviOption;
 	cout << "Trying to open AVI file: " << m_currVideoSettings.filename << endl;
-    error = aviRecorder.AVIOpen(m_currVideoSettings.filename, &aviOption);
+    error = m_aviRecorder.AVIOpen(m_currVideoSettings.filename, &aviOption);
     if(error != PGRERROR_OK)
     {
 		PrintError(error);
@@ -213,7 +226,7 @@ void StreamWorker::run()
 
         try
         {
-            SaveImageToVideo(&aviRecorder, &image);
+            SaveImageToVideo(&m_aviRecorder, &image);
         }
         catch (RecordingException& e)
         {
@@ -224,7 +237,7 @@ void StreamWorker::run()
     }
 
     // do cleanup
-    error = aviRecorder.AVIClose();
+    error = m_aviRecorder.AVIClose();
     if(error != PGRERROR_OK)
     {
         return;

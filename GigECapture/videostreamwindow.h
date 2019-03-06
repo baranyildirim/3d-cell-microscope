@@ -64,6 +64,7 @@ class StreamWorker : public QObject, public QRunnable {
 	Q_OBJECT
 public:
     StreamWorker(FlyCapture2::GigECamera* cam, RecorderState& recorderState);
+	~StreamWorker();
     void run() override;
 
 signals:
@@ -89,6 +90,7 @@ private:
     FlyCapture2::GigECamera* m_cam;
     std::vector<FlyCapture2::Image> m_imageBuffer;
 	QByteArray m_byteBuffer;
+	FlyCapture2::AVIRecorder m_aviRecorder;
 };
 
 #endif // VIDEOSTREAMWINDOW_H
